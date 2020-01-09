@@ -193,4 +193,22 @@ footer .unsplash-pop-up .close:hover {
             transform: translateY(0);
   }
 }
+
+@media (max-width: 900px) {
+  .col-two .image-container {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .col-one .image-container {
+    margin-right: 0;
+  }
+  .col-two {
+    display: none;
+  }
+  .col-three {
+    display: none;
+  }
+}
 /*# sourceMappingURL=style.css.map */

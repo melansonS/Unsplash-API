@@ -48,6 +48,10 @@ class SearchForm extends Component {
   componentDidMount() {
     this.loadDefault();
     //resize listener for responsive columns
+    // if (winWidth <= 600) {
+    //   this.setState({ cols: 0 });
+    // }
+
     window.addEventListener("resize", () => {
       let winWidth = Math.max(
         document.documentElement.clientWidth,
@@ -181,7 +185,7 @@ class SearchForm extends Component {
         </form>
 
         <div className="gallery">
-          <div className="col-ne">{colOne}</div>
+          <div className="col-one">{colOne}</div>
           <div className="col-two">{colTwo}</div>
           <div className="col-three">{colThree}</div>
           {this.state.showUnsplashFooter && (
