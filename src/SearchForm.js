@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { MdFileDownload } from "react-icons/md";
+import { AiOutlineSearch } from "react-icons/ai";
+const uuidv4 = require("uuid/v4");
 
 let apiKey = "586f619dd0e85124d92b3770517244f0370a5606f7e7068d1e735857c0ce86de";
 
@@ -7,23 +10,34 @@ class SearchForm extends Component {
     super(props);
     this.state = {
       searchInput: "",
-      viewing: "default",
       page: 1,
       images: [],
+      cols: 3,
       showUnsplashFooter: false
     };
     window.onscroll = () => {
       if (
+        //checks to see if the scroll bar is precisely between 88% and 89% of the way to the bottom,
+        // or if the has already reached the bottom
+        (window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight * 0.88 &&
+          window.innerHeight + document.documentElement.scrollTop <=
+            document.documentElement.offsetHeight * 0.89) ||
         window.innerHeight + document.documentElement.scrollTop ===
-        document.documentElement.offsetHeight
+          document.documentElement.offsetHeight
       ) {
-        if (this.state.page >= 4) {
-          this.setState({ showUnsplashFooter: true });
+        if (this.state.page >= 5) {
+          if (
+            window.innerHeight + document.documentElement.scrollTop ===
+            document.documentElement.offsetHeight
+          ) {
+            this.setState({ showUnsplashFooter: true });
+          }
           return;
         }
-        // Do awesome stuff like loading more content!
+        // console.log("load new things!");
         this.setState({ page: this.state.page + 1 });
-        if (this.state.viewing === "default") {
+        if (this.state.searchInput === "") {
           this.loadDefaultScroll();
         } else {
           this.loadSearchScroll();
@@ -33,7 +47,22 @@ class SearchForm extends Component {
   }
   componentDidMount() {
     this.loadDefault();
+    //resize listener for responsive columns
+    window.addEventListener("resize", () => {
+      let winWidth = Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0
+      );
+      if (winWidth <= 900 && winWidth > 600) {
+        this.setState({ cols: 2 });
+      } else if (winWidth <= 600) {
+        this.setState({ cols: 0 });
+      } else {
+        this.setState({ cols: 3 });
+      }
+    });
   }
+
   loadDefault = async () => {
     let response = await fetch(
       `https://api.unsplash.com/photos/?per_page=12&client_id=${apiKey}`
@@ -43,27 +72,9 @@ class SearchForm extends Component {
     this.setState({ images: body });
   };
 
-  submitForm = async evt => {
-    evt.preventDefault();
-    let response = await fetch(
-      `https://api.unsplash.com/search/photos?page=1&per_page=12&query=${this.state.searchInput}&client_id=${apiKey}`
-    );
-    let body = await response.text();
-    body = JSON.parse(body);
-    this.setState({
-      images: body.results,
-      viewing: this.state.searchInput,
-      searchInput: "",
-      page: 1
-    });
-  };
-  handleTextChange = evt => {
-    this.setState({ searchInput: evt.target.value });
-  };
-
   loadSearchScroll = async () => {
     let response = await fetch(
-      `https://api.unsplash.com/search/photos?page=${this.state.page}&per_page=12&query=${this.state.viewing}&client_id=${apiKey}`
+      `https://api.unsplash.com/search/photos?page=${this.state.page}&per_page=12&query=${this.state.searchInput}&client_id=${apiKey}`
     );
     let body = await response.text();
     body = JSON.parse(body);
@@ -71,32 +82,125 @@ class SearchForm extends Component {
   };
   loadDefaultScroll = async () => {
     let response = await fetch(
-      `https://api.unsplash.com/photos/?per_page=12&page=${this.state.page}&client_id=${apiKey}`
+      `https://api.unsplash.com/photos/?page=${this.state.page}&per_page=12&client_id=${apiKey}`
     );
     let body = await response.text();
     body = JSON.parse(body);
     this.setState({ images: this.state.images.concat(body) });
   };
 
+  handleTextChange = evt => {
+    this.setState({ searchInput: evt.target.value });
+  };
+
+  submitForm = async evt => {
+    evt.preventDefault();
+    if (this.state.searchInput === "") {
+      this.setState({ page: 1 });
+      return this.loadDefault();
+    }
+    let response = await fetch(
+      `https://api.unsplash.com/search/photos?page=1&per_page=12&query=${this.state.searchInput}&client_id=${apiKey}`
+    );
+    let body = await response.text();
+    body = JSON.parse(body);
+    this.setState({
+      images: body.results,
+      showUnsplashFooter: false,
+      page: 1
+    });
+  };
+
+  downloadImage = async downloadUrl => {
+    let response = await fetch(downloadUrl + `?client_id=${apiKey}`);
+    let body = await response.text();
+    console.log("download image body:", body);
+  };
+
   render = () => {
+    //Seperates each of the images into seperate columns for proper massonry grid display depending on screenwidth
+    let colOne = [];
+    let colTwo = [];
+    let colThree = [];
+    this.state.images.forEach((image, index) => {
+      let array = colOne;
+      if (index % this.state.cols === 1) {
+        array = colTwo;
+      }
+      if (index % this.state.cols === 2) {
+        array = colThree;
+      }
+      array.push(
+        <div className="image-container" key={uuidv4()}>
+          <img
+            src={image.urls.small}
+            alt={image.description}
+            onClick={() => {
+              console.log("INDEX:", index, " image:", image);
+            }}
+          />
+          <a
+            className="download-button"
+            href={image.links.download + "?force=true"}
+            download
+            onClick={() => {
+              this.downloadImage(image.links.download_location);
+            }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MdFileDownload />
+          </a>
+          <a
+            href={image.user.links.html}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {" "}
+            <p className="user-name">{image.user.name}</p>
+          </a>
+        </div>
+      );
+    });
     return (
       <div>
         <form onSubmit={this.submitForm}>
-          <h4>Search for an image</h4>
-          <input
-            type="text"
-            onChange={this.handleTextChange}
-            value={this.state.searchInput}
-          ></input>
-          <input type="submit"></input>
+          <img src="UnsplashLogo.png" alt="Unsplash logo"></img>
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search for images on Unsplash!"
+              onChange={this.handleTextChange}
+              value={this.state.searchInput}
+            ></input>
+            <input type="submit" id="image-search"></input>
+            <label for="image-search">
+              <AiOutlineSearch />
+            </label>
+          </div>
         </form>
 
-        <div className="image-container">
-          {this.state.images.map(image => {
-            return <img src={image.urls.small} />;
-          })}
+        <div className="gallery">
+          <div className="col-ne">{colOne}</div>
+          <div className="col-two">{colTwo}</div>
+          <div className="col-three">{colThree}</div>
+          {this.state.showUnsplashFooter && (
+            <footer>
+              <div className="unsplash-pop-up">
+                <span
+                  onClick={() => this.setState({ showUnsplashFooter: false })}
+                  className="close"
+                >
+                  X
+                </span>
+                <p>Visit Unsplash for more!</p>
+                <a className="unsplash-button" href="https://unsplash.com/">
+                  <img src="UnsplashLogo.png" alt="Unsplash logo"></img>
+                </a>
+              </div>
+            </footer>
+          )}
         </div>
-        {this.state.showUnsplashFooter && <div>Visit unsplash for more!</div>}
       </div>
     );
   };

@@ -1,0 +1,148 @@
+* {
+  font-family: "Lato", sans-serif;
+}
+
+body {
+  background-color: black;
+  margin: 0;
+}
+
+form {
+  width: 100%;
+  padding: 2em 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  img {
+    padding-bottom: 1em;
+  }
+  .search-bar {
+    width: 350px;
+    display: flex;
+    position: relative;
+    background-color: white;
+    align-items: center;
+    input[type="text"] {
+      border: none;
+      outline: none;
+      padding: 0.75em;
+      width: 100%;
+      position: relative;
+      color: #303030;
+      font-size: 16px;
+    }
+    input[type="submit"] {
+      display: none;
+    }
+    label {
+      margin-right: 0.75em;
+      font-size: 20px;
+      color: #303030;
+      display: flex;
+    }
+    label:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.gallery {
+  width: 85%;
+  margin: 0px auto;
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+  .image-container {
+    position: relative;
+    display: flex;
+    margin: 5px 5px 0 0;
+    img {
+      width: 100%;
+      transition: 0.3s;
+    }
+    .user-name {
+      display: none;
+      position: absolute;
+      bottom: 1em;
+      left: 1em;
+    }
+    .download-button {
+      display: none;
+      position: absolute;
+      bottom: 1em;
+      right: 1em;
+      font-size: 1.5em;
+    }
+    a {
+      color: white;
+    }
+  }
+  .col-three {
+    .image-container {
+      margin-right: 0;
+    }
+  }
+  .image-container:hover {
+    // opacity: 0.9;
+    img {
+      opacity: 0.78;
+    }
+    .user-name {
+      display: block;
+    }
+    .download-button {
+      display: inline;
+    }
+  }
+}
+
+footer {
+  //   transition: 1s;
+  position: absolute;
+  bottom: 0;
+  height: 800px;
+  width: 100%;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(255, 255, 255, 0.6)
+  );
+  animation: slide-up 1s ease;
+  .unsplash-pop-up {
+    margin: 400px auto 10vh auto;
+    width: 45%;
+    min-width: 220px;
+    padding: 1em;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0.98);
+    text-align: center;
+    position: relative;
+    color: white;
+    p {
+      margin-top: 0;
+    }
+    .close {
+      position: absolute;
+      top: 0.7em;
+      right: 1em;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .close:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
