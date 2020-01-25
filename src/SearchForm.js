@@ -26,7 +26,7 @@ class SearchForm extends Component {
         window.innerHeight + document.documentElement.scrollTop ===
           document.documentElement.offsetHeight
       ) {
-        if (this.state.page >= 5) {
+        if (this.state.page >= 4) {
           if (
             window.innerHeight + document.documentElement.scrollTop ===
             document.documentElement.offsetHeight
@@ -47,10 +47,6 @@ class SearchForm extends Component {
   }
   componentDidMount() {
     this.loadDefault();
-    //resize listener for responsive columns
-    // if (winWidth <= 600) {
-    //   this.setState({ cols: 0 });
-    // }
 
     window.addEventListener("resize", () => {
       let winWidth = Math.max(
@@ -100,7 +96,7 @@ class SearchForm extends Component {
   submitForm = async evt => {
     evt.preventDefault();
     if (this.state.searchInput === "") {
-      this.setState({ page: 1 });
+      this.setState({ page: 1, showUnsplashFooter: false });
       return this.loadDefault();
     }
     let response = await fetch(
