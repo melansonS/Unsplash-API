@@ -13,29 +13,30 @@ class SearchForm extends Component {
       page: 1,
       images: [],
       cols: 3,
-      showUnsplashFooter: false
+      showUnsplashFooter: false,
+      maxPages: 6,
     };
     window.onscroll = () => {
       if (
-        //checks to see if the scroll bar is precisely between 88% and 89% of the way to the bottom,
+        //checks to see if the scroll bar is precisely between 79% and 80% of the way to the bottom,
         // or if the has already reached the bottom
-        (window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight * 0.88 &&
-          window.innerHeight + document.documentElement.scrollTop <=
-            document.documentElement.offsetHeight * 0.89) ||
-        window.innerHeight + document.documentElement.scrollTop ===
+        (window.innerHeight + Math.round(document.documentElement.scrollTop) >=
+          document.documentElement.offsetHeight * 0.79 &&
+          window.innerHeight + Math.round(document.documentElement.scrollTop) <=
+            document.documentElement.offsetHeight * 0.8) ||
+        window.innerHeight + Math.round(document.documentElement.scrollTop) ===
           document.documentElement.offsetHeight
       ) {
-        if (this.state.page >= 4) {
+        if (this.state.page >= this.state.maxPages) {
           if (
-            window.innerHeight + document.documentElement.scrollTop ===
-            document.documentElement.offsetHeight
+            window.innerHeight +
+              Math.round(document.documentElement.scrollTop) >=
+            document.documentElement.offsetHeight * 0.98
           ) {
             this.setState({ showUnsplashFooter: true });
           }
           return;
         }
-        // console.log("load new things!");
         this.setState({ page: this.state.page + 1 });
         if (this.state.searchInput === "") {
           this.loadDefaultScroll();
@@ -65,7 +66,7 @@ class SearchForm extends Component {
 
   loadDefault = async () => {
     let response = await fetch(
-      `https://api.unsplash.com/photos/?per_page=12&client_id=${apiKey}`
+      `https://api.unsplash.com/photos/?per_page=22&client_id=${apiKey}`
     );
     let body = await response.text();
     body = JSON.parse(body);
@@ -74,7 +75,7 @@ class SearchForm extends Component {
 
   loadSearchScroll = async () => {
     let response = await fetch(
-      `https://api.unsplash.com/search/photos?page=${this.state.page}&per_page=12&query=${this.state.searchInput}&client_id=${apiKey}`
+      `https://api.unsplash.com/search/photos?page=${this.state.page}&per_page=22&query=${this.state.searchInput}&client_id=${apiKey}`
     );
     let body = await response.text();
     body = JSON.parse(body);
@@ -82,36 +83,36 @@ class SearchForm extends Component {
   };
   loadDefaultScroll = async () => {
     let response = await fetch(
-      `https://api.unsplash.com/photos/?page=${this.state.page}&per_page=12&client_id=${apiKey}`
+      `https://api.unsplash.com/photos/?page=${this.state.page}&per_page=22&client_id=${apiKey}`
     );
     let body = await response.text();
     body = JSON.parse(body);
     this.setState({ images: this.state.images.concat(body) });
   };
 
-  handleTextChange = evt => {
+  handleTextChange = (evt) => {
     this.setState({ searchInput: evt.target.value });
   };
 
-  submitForm = async evt => {
+  submitForm = async (evt) => {
     evt.preventDefault();
     if (this.state.searchInput === "") {
       this.setState({ page: 1, showUnsplashFooter: false });
       return this.loadDefault();
     }
     let response = await fetch(
-      `https://api.unsplash.com/search/photos?page=1&per_page=12&query=${this.state.searchInput}&client_id=${apiKey}`
+      `https://api.unsplash.com/search/photos?page=1&per_page=22&query=${this.state.searchInput}&client_id=${apiKey}`
     );
     let body = await response.text();
     body = JSON.parse(body);
     this.setState({
       images: body.results,
       showUnsplashFooter: false,
-      page: 1
+      page: 1,
     });
   };
 
-  downloadImage = async downloadUrl => {
+  downloadImage = async (downloadUrl) => {
     let response = await fetch(downloadUrl + `?client_id=${apiKey}`);
     let body = await response.text();
     console.log("download image body:", body);
@@ -147,15 +148,13 @@ class SearchForm extends Component {
               this.downloadImage(image.links.download_location);
             }}
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             <MdFileDownload />
           </a>
           <a
             href={image.user.links.html}
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             {" "}
             <p className="user-name">{image.user.name}</p>
           </a>
@@ -171,10 +170,9 @@ class SearchForm extends Component {
               type="text"
               placeholder="Search for images on Unsplash!"
               onChange={this.handleTextChange}
-              value={this.state.searchInput}
-            ></input>
+              value={this.state.searchInput}></input>
             <input type="submit" id="image-search"></input>
-            <label for="image-search">
+            <label htmlFor="image-search">
               <AiOutlineSearch />
             </label>
           </div>
@@ -189,8 +187,7 @@ class SearchForm extends Component {
               <div className="unsplash-pop-up">
                 <span
                   onClick={() => this.setState({ showUnsplashFooter: false })}
-                  className="close"
-                >
+                  className="close">
                   X
                 </span>
                 <p>Visit Unsplash for more!</p>

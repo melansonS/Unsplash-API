@@ -30,7 +30,9 @@ form img {
 }
 
 form .search-bar {
-  width: 350px;
+  min-width: 300px;
+  max-width: 400px;
+  width: 30%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -85,7 +87,7 @@ form .search-bar label:hover {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  margin: 5px 5px 0 0;
+  margin: 10px 10px 0 0;
 }
 
 .gallery .image-container img {
@@ -133,15 +135,17 @@ footer {
   position: absolute;
   bottom: 0;
   height: 800px;
-  width: 100%;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(255, 255, 255, 0.6)));
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.6));
-  -webkit-animation: slide-up 1s ease;
-          animation: slide-up 1s ease;
+  width: 99vw;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(255, 255, 255, 0.45)));
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.45));
+  -webkit-animation: slide-up 1.5s ease;
+          animation: slide-up 1.5s ease;
 }
 
 footer .unsplash-pop-up {
-  margin: 400px auto 10vh auto;
+  -webkit-animation: slide-up 1.5s ease;
+          animation: slide-up 1.5s ease;
+  margin: 400px auto auto auto;
   width: 45%;
   min-width: 220px;
   padding: 1em;
@@ -171,26 +175,22 @@ footer .unsplash-pop-up .close:hover {
 @-webkit-keyframes slide-up {
   0% {
     opacity: 0;
-    -webkit-transform: translateY(20px);
-            transform: translateY(20px);
+    margin-top: 450px;
   }
   100% {
     opacity: 1;
-    -webkit-transform: translateY(0);
-            transform: translateY(0);
+    margin-top: 400px;
   }
 }
 
 @keyframes slide-up {
   0% {
     opacity: 0;
-    -webkit-transform: translateY(20px);
-            transform: translateY(20px);
+    margin-top: 450px;
   }
   100% {
     opacity: 1;
-    -webkit-transform: translateY(0);
-            transform: translateY(0);
+    margin-top: 400px;
   }
 }
 

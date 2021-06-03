@@ -18,7 +18,9 @@ form {
     padding-bottom: 1em;
   }
   .search-bar {
-    width: 350px;
+    min-width: 300px;
+    max-width: 400px;
+    width: 30%;
     display: flex;
     position: relative;
     background-color: white;
@@ -57,7 +59,7 @@ form {
   .image-container {
     position: relative;
     display: flex;
-    margin: 5px 5px 0 0;
+    margin: 10px 10px 0 0;
     img {
       width: 100%;
       transition: 0.3s;
@@ -99,19 +101,19 @@ form {
 }
 
 footer {
-  //   transition: 1s;
   position: absolute;
   bottom: 0;
   height: 800px;
-  width: 100%;
+  width: 99vw;
   background-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0),
-    rgba(255, 255, 255, 0.6)
+    rgba(255, 255, 255, 0.45)
   );
-  animation: slide-up 1s ease;
+  animation: slide-up 1.5s ease;
   .unsplash-pop-up {
-    margin: 400px auto 10vh auto;
+    animation: slide-up 1.5s ease;
+    margin: 400px auto auto auto;
     width: 45%;
     min-width: 220px;
     padding: 1em;
@@ -139,11 +141,11 @@ footer {
 @keyframes slide-up {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    margin-top: 450px;
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    margin-top: 400px;
   }
 }
 
@@ -154,6 +156,7 @@ footer {
     }
   }
 }
+
 @media (max-width: 600px) {
   .col-one {
     .image-container {
